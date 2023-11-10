@@ -482,12 +482,17 @@ class App extends Component {
     const { highBet, players, activePlayerIndex, phase } = this.state;
     return (
       <div className="poker-app--background">
+        <div className="connect-button-container">
+          <ConnectButton />
+        </div>
+
         <div className="poker-table--container">
           <img
             className="poker-table--table-image"
             src={"./assets/table-nobg-svg-01.svg"}
             alt="Poker Table"
           />
+
           {this.renderBoard()}
           <div className="community-card-container">
             {this.renderCommunityCards()}
@@ -514,7 +519,6 @@ class App extends Component {
                 this.handleBetInputChange
               )}
           </div>
-          <ConnectButton />
         </div>
       </div>
     );
