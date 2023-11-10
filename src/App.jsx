@@ -56,6 +56,7 @@ const wagmiConfig = createConfig({
 });
 
 import Table from "./Table.jsx";
+import Temp from "./utils/Temp.jsx";
 
 class App extends Component {
   render() {
@@ -63,7 +64,8 @@ class App extends Component {
       <div className="App">
         <WagmiConfig config={wagmiConfig}>
           <PassProvider client={passClient}>
-            <Table></Table>
+            <Table />
+            <Temp />
           </PassProvider>
         </WagmiConfig>
       </div>

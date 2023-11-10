@@ -3,8 +3,8 @@ import { useAccount } from "wagmi";
 
 export function withAccount(Component) {
   return function WrappedComponent(props) {
-    const { data: accountData, isError, isLoading } = useAccount();
-    console.log("data " + JSON.stringify(accountData));
-    return <Component {...props} accountData={accountData} />;
+    const { address, isError, isLoading } = useAccount();
+    console.log("data " + JSON.stringify(address));
+    return <Component {...props} accountData={address} />;
   };
 }

@@ -75,6 +75,7 @@ class Table extends Component {
   loadTable = () => {};
 
   async componentDidMount() {
+    console.log("props " + JSON.stringify(this.props));
     const players = await generateTable();
     const dealerIndex = Math.floor(Math.random() * Math.floor(players.length));
     const blindIndicies = determineBlindIndices(dealerIndex, players.length);
