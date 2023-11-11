@@ -8,6 +8,7 @@ import WinScreen from "./WinScreen";
 import { withAccount } from "./HOC.jsx";
 
 import { ConnectButton } from "0xpass";
+import { io } from "socket.io-client";
 
 import Player from "./components/players/Player";
 import ShowdownPlayer from "./components/players/ShowdownPlayer";
@@ -19,6 +20,8 @@ import {
 } from "./utils/cards.js";
 
 import { generateTable, beginNextRound, checkWin } from "./utils/players.js";
+
+const socket = io("http://localhost:5000", { transports: ["websocket"] });
 
 import {
   determineBlindIndices,
@@ -75,7 +78,6 @@ class Table extends Component {
   loadTable = () => {};
 
   async componentDidMount() {
-    console.log("props " + JSON.stringify(this.props));
     const players = await generateTable();
     const dealerIndex = Math.floor(Math.random() * Math.floor(players.length));
     const blindIndicies = determineBlindIndices(dealerIndex, players.length);
@@ -247,6 +249,8 @@ class Table extends Component {
   };
 
   renderBoard = () => {
+    console.log("props " + JSON.stringify(this.props));
+    socket.emit("joinGame", this.props.accountData);
     const {
       players,
       activePlayerIndex,
