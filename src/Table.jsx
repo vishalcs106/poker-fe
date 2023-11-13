@@ -19,7 +19,14 @@ import {
   dealPrivateCards,
 } from "./utils/cards.js";
 
-import { generateTable, beginNextRound, checkWin } from "./utils/players.js";
+import { useAccount } from "wagmi";
+
+import {
+  generateTable,
+  beginNextRound,
+  checkWin,
+  formatAddress,
+} from "./utils/players.js";
 
 const socket = io("http://localhost:5000", { transports: ["websocket"] });
 
@@ -79,6 +86,8 @@ class Table extends Component {
 
   async componentDidMount() {
     const players = await generateTable();
+    console.log("pl " + JSON.stringify(players));
+    players[0].name = formatAddress(this.props.accountData);
     const dealerIndex = Math.floor(Math.random() * Math.floor(players.length));
     const blindIndicies = determineBlindIndices(dealerIndex, players.length);
     const playersBoughtIn = anteUpBlinds(

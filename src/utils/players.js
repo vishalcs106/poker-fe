@@ -307,6 +307,15 @@ const checkWin = (players) => {
   return players.filter((player) => player.chips > 0).length === 1;
 };
 
+const formatAddress = (address) => {
+  if (address.length < 42) {
+    return address; // Return the original address if it's too short
+  }
+  return (
+    address.substring(0, 5) + "..." + address.substring(address.length - 3)
+  );
+};
+
 // NEED INITIAL PLAYER STATE
 // INITIAL TABLE STATE
 export {
@@ -316,4 +325,5 @@ export {
   determinePhaseStartActivePlayer,
   beginNextRound,
   checkWin,
+  formatAddress,
 };
