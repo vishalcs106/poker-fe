@@ -8,7 +8,8 @@ import WinScreen from "./WinScreen";
 import { withAccount } from "./HOC.jsx";
 
 import { ConnectButton } from "0xpass";
-import { io } from "socket.io-client";
+
+import SocketContext from "./context/SocketContext";
 
 import Player from "./components/players/Player";
 import ShowdownPlayer from "./components/players/ShowdownPlayer";
@@ -27,8 +28,6 @@ import {
   checkWin,
   formatAddress,
 } from "./utils/players.js";
-
-const socket = io("http://localhost:5000", { transports: ["websocket"] });
 
 import {
   determineBlindIndices,
@@ -49,6 +48,7 @@ import {
 
 import { cloneDeep } from "lodash";
 class Table extends Component {
+  static contextType = SocketContext;
   state = {
     loading: true,
     winnerFound: null,
@@ -85,6 +85,7 @@ class Table extends Component {
   loadTable = () => {};
 
   async componentDidMount() {
+    const socket = this.context;
     const players = await generateTable();
     if (players.length < 2) return;
     console.log("pl " + JSON.stringify(players));
@@ -262,10 +263,10 @@ class Table extends Component {
     console.log("props " + JSON.stringify(this.props));
     if (this.props.accountData == null) {
       console.log("disconnecting ");
-      socket.emit("leaveGame");
+      this.context.emit("leaveGame");
       return;
     }
-    socket.emit("joinGame", this.props.accountData);
+    this.context.emit("joinGame", this.props.accountData);
     const {
       players,
       activePlayerIndex,

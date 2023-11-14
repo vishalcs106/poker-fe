@@ -7,7 +7,8 @@ import "raf/polyfill";
 
 import React, { Component } from "react";
 import "./App.css";
-
+import SocketProvider from "./provider/SocketProvider";
+import SocketContext from "./context/SocketContext";
 import { configureChains, createConfig, WagmiConfig } from "wagmi";
 import { mainnet, polygonMumbai } from "wagmi/chains";
 import { publicProvider } from "wagmi/providers/public";
@@ -18,8 +19,10 @@ import {
   socialMagicWallet,
 } from "0xpass/wallets";
 import { PassProvider, createClient, connectorsForWallets } from "0xpass";
-import { ConnectButton } from "0xpass";
 import "0xpass/styles.css";
+
+import { io } from "socket.io-client";
+const socket = io("http://localhost:5000", { transports: ["websocket"] });
 
 const { chains, publicClient } = configureChains(
   [polygonMumbai],
@@ -64,8 +67,10 @@ class App extends Component {
       <div className="App">
         <WagmiConfig config={wagmiConfig}>
           <PassProvider client={passClient}>
-            <Table />
-            <Temp />
+            <SocketProvider socket={socket}>
+              <Table />
+              <Temp />
+            </SocketProvider>
           </PassProvider>
         </WagmiConfig>
       </div>
