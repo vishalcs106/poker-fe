@@ -86,6 +86,7 @@ class Table extends Component {
 
   async componentDidMount() {
     const players = await generateTable();
+    if (players.length < 2) return;
     console.log("pl " + JSON.stringify(players));
     players[0].name = formatAddress(this.props.accountData);
     const dealerIndex = Math.floor(Math.random() * Math.floor(players.length));
@@ -259,6 +260,11 @@ class Table extends Component {
 
   renderBoard = () => {
     console.log("props " + JSON.stringify(this.props));
+    if (this.props.accountData == null) {
+      console.log("disconnecting ");
+      socket.emit("leaveGame");
+      return;
+    }
     socket.emit("joinGame", this.props.accountData);
     const {
       players,

@@ -308,6 +308,7 @@ const checkWin = (players) => {
 };
 
 const formatAddress = (address) => {
+  if (address == null) return "";
   if (address.length < 42) {
     return address; // Return the original address if it's too short
   }
