@@ -6,6 +6,7 @@ import Spinner from "./Spinner";
 import WinScreen from "./WinScreen";
 
 import { withAccount } from "./HOC.jsx";
+import { withGameState } from "./GameStateHOC.jsx";
 
 import { ConnectButton } from "0xpass";
 
@@ -87,8 +88,10 @@ class Table extends Component {
 
   async componentDidMount() {
     const socket = this.context;
+    const { gameState } = this.props;
+    console.log("gameS " + JSON.stringify(gameState));
     const players = await generateTable();
-    if (players.length < 2) return;
+    // if (players.length < 2) return;
     console.log("pl " + JSON.stringify(players));
     players[0].name = formatAddress(this.props.accountData);
     const dealerIndex = Math.floor(Math.random() * Math.floor(players.length));
@@ -138,9 +141,14 @@ class Table extends Component {
     imageLoaderRequest.open("GET", "./assets/table-nobg-svg-01.svg");
     imageLoaderRequest.send();
 
+    let gamePlayers = null;
+    if (gameState != null) {
+      gamePlayers = gameState.players;
+    }
+
     this.setState((prevState) => ({
       // loading: false,
-      players: playersBoughtIn,
+      players: gamePlayers,
       numPlayersActive: players.length,
       numPlayersFolded: 0,
       numPlayersAllIn: 0,
@@ -156,7 +164,8 @@ class Table extends Component {
       betInputValue: prevState.minBet,
       phase: "initialDeal",
     }));
-    this.runGameLoop();
+    console.log("states " + JSON.stringify(this.state));
+    // this.runGameLoop();
   }
 
   handleBetInputChange = (val, min, max) => {
@@ -262,12 +271,22 @@ class Table extends Component {
 
   renderBoard = () => {
     console.log("props " + JSON.stringify(this.props));
+
     if (this.props.accountData == null) {
       console.log("disconnecting ");
       this.context.emit("leaveGame");
       return;
+    } else {
+      this.context.emit("joinGame", this.props.accountData);
     }
-    this.context.emit("joinGame", this.props.accountData);
+    if (this.props.gameState == null) return;
+    else this.state.players = this.props.gameState.gamePlayers;
+
+    console.log(
+      "his.props.gameState.players " +
+        JSON.stringify(this.props.gameState.gamePlayers)
+    );
+    console.log("this.state.players " + JSON.stringify(this.state.players));
     const {
       players,
       activePlayerIndex,
@@ -449,7 +468,7 @@ class Table extends Component {
   };
 
   renderGame = (gameState) => {
-    console.log("gs " + JSON.stringify(gameState));
+    // console.log("gs " + JSON.stringify(gameState));
     const { highBet, players, activePlayerIndex, phase } = this.state;
     return (
       <div className="poker-app--background">
@@ -474,14 +493,17 @@ class Table extends Component {
               src={"./assets/pot.svg"}
               alt="Pot Value"
             />
-            <h4> {`${this.state.pot}`} </h4>
+            <h4> {this.state.pot && `${this.state.pot}`} </h4>
           </div>
         </div>
         {this.state.phase === "showdown" && this.renderShowdown()}
         <div className="game-action-bar">
-          <div className="action-buttons">{this.renderActionButtons()}</div>
+          <div className="action-buttons">
+            {gameState && this.renderActionButtons()}
+          </div>
           <div className="slider-boi">
             {!this.state.loading &&
+              gameState &&
               renderActionMenu(
                 highBet,
                 players,
@@ -513,4 +535,4 @@ class Table extends Component {
   }
 }
 
-export default withAccount(Table);
+export default withAccount(withGameState(Table));

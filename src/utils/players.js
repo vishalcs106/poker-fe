@@ -15,7 +15,8 @@ import {
 
 const axios = require("axios");
 // TODO Generate UUID to simulate User ID and really get a perf match on binding to players when determining winnings
-const generateTable = async () => {
+const generateTable = async (players) => {
+  console.log("Ply " + JSON.stringify(players));
   const users = [
     {
       id: uuid(),

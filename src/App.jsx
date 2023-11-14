@@ -16,7 +16,7 @@ import Table from "./Table.jsx";
 import Temp from "./utils/Temp.jsx";
 import GameStateProvider from "./provider/GameStateProvider.js";
 
-const socket = io("http://192.168.0.101:5000", { transports: ["websocket"] });
+const socket = io("http://192.168.0.109:5000", { transports: ["websocket"] });
 
 const { chains, publicClient } = configureChains(
   [polygonMumbai],
@@ -57,6 +57,7 @@ function App() {
 
   useEffect(() => {
     socket.on("gameState", (newGameState) => {
+      console.log("socketGameState " + JSON.stringify(newGameState));
       setGameState(newGameState);
     });
 

@@ -81,6 +81,16 @@ const Player = (props) => {
     }
   };
 
+  const formatAddress = (address) => {
+    if (address == null) return "";
+    if (address.length < 42) {
+      return address; // Return the original address if it's too short
+    }
+    return (
+      address.substring(0, 5) + "..." + address.substring(address.length - 3)
+    );
+  };
+
   return (
     <div className={`player-entity--wrapper p${arrayIndex}`}>
       <PlayerStatusNotificationBox
@@ -94,14 +104,14 @@ const Player = (props) => {
         <div className="player-avatar--container">
           <img
             className={`player-avatar--image${isActive ? " activePlayer" : ""}`}
-            src={avatarURL}
+            src={"/assets/boy.svg"}
             alt="Player Avatar"
           />
           <h5
             className="player-info--name"
             style={{ fontSize: name.length < 14 ? 12 : 10 }}
           >
-            {`${name}`}
+            {`${formatAddress(name)}`}
           </h5>
           <div className="player-info--stash--container">
             <img
