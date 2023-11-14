@@ -10,6 +10,7 @@ import { withAccount } from "./HOC.jsx";
 import { ConnectButton } from "0xpass";
 
 import SocketContext from "./context/SocketContext";
+import GameStateContext from "./context/GameStateContext.js";
 
 import Player from "./components/players/Player";
 import ShowdownPlayer from "./components/players/ShowdownPlayer";
@@ -447,7 +448,8 @@ class Table extends Component {
     );
   };
 
-  renderGame = () => {
+  renderGame = (gameState) => {
+    console.log("gs " + JSON.stringify(gameState));
     const { highBet, players, activePlayerIndex, phase } = this.state;
     return (
       <div className="poker-app--background">
@@ -494,15 +496,19 @@ class Table extends Component {
   };
   render() {
     return (
-      <div className="poker-table--wrapper">
-        {this.state.loading ? (
-          <Spinner />
-        ) : this.state.winnerFound ? (
-          <WinScreen />
-        ) : (
-          this.renderGame()
+      <GameStateContext.Consumer>
+        {(gameState) => (
+          <div className="poker-table--wrapper">
+            {this.state.loading ? (
+              <Spinner />
+            ) : this.state.winnerFound ? (
+              <WinScreen />
+            ) : (
+              this.renderGame(gameState)
+            )}
+          </div>
         )}
-      </div>
+      </GameStateContext.Consumer>
     );
   }
 }

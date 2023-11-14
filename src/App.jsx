@@ -1,18 +1,9 @@
-// import "@babel/polyfill";
-
-// import 'core-js/es6/map';
-// import 'core-js/es6/set';
-
-import "raf/polyfill";
-
-import React, { Component } from "react";
+import React, { useState, useEffect } from "react";
 import "./App.css";
 import SocketProvider from "./provider/SocketProvider";
-import SocketContext from "./context/SocketContext";
 import { configureChains, createConfig, WagmiConfig } from "wagmi";
-import { mainnet, polygonMumbai } from "wagmi/chains";
+import { polygonMumbai } from "wagmi/chains";
 import { publicProvider } from "wagmi/providers/public";
-
 import {
   metaMaskWallet,
   emailMagicWallet,
@@ -20,9 +11,12 @@ import {
 } from "0xpass/wallets";
 import { PassProvider, createClient, connectorsForWallets } from "0xpass";
 import "0xpass/styles.css";
-
 import { io } from "socket.io-client";
-const socket = io("http://localhost:5000", { transports: ["websocket"] });
+import Table from "./Table.jsx";
+import Temp from "./utils/Temp.jsx";
+import GameStateProvider from "./provider/GameStateProvider.js";
+
+const socket = io("http://192.168.0.101:5000", { transports: ["websocket"] });
 
 const { chains, publicClient } = configureChains(
   [polygonMumbai],
@@ -58,24 +52,33 @@ const wagmiConfig = createConfig({
   publicClient,
 });
 
-import Table from "./Table.jsx";
-import Temp from "./utils/Temp.jsx";
+function App() {
+  const [gameState, setGameState] = useState(null);
 
-class App extends Component {
-  render() {
-    return (
-      <div className="App">
-        <WagmiConfig config={wagmiConfig}>
-          <PassProvider client={passClient}>
-            <SocketProvider socket={socket}>
+  useEffect(() => {
+    socket.on("gameState", (newGameState) => {
+      setGameState(newGameState);
+    });
+
+    return () => {
+      socket.off("gameState");
+    };
+  }, []);
+
+  return (
+    <div className="App">
+      <WagmiConfig config={wagmiConfig}>
+        <PassProvider client={passClient}>
+          <SocketProvider socket={socket}>
+            <GameStateProvider gameState={gameState}>
               <Table />
               <Temp />
-            </SocketProvider>
-          </PassProvider>
-        </WagmiConfig>
-      </div>
-    );
-  }
+            </GameStateProvider>
+          </SocketProvider>
+        </PassProvider>
+      </WagmiConfig>
+    </div>
+  );
 }
 
 export default App;
