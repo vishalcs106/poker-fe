@@ -9,7 +9,10 @@ const dealerChipImageURL = "/assets/chip.svg";
 const chipCountImageURL = "./assets/chips.svg";
 const playerBetImageURL = "./assets/bet.svg";
 
+import { useAccount } from "wagmi";
+
 const Player = (props) => {
+  const { address } = useAccount();
   const {
     arrayIndex,
     playerAnimationSwitchboard,
@@ -38,7 +41,7 @@ const Player = (props) => {
       applyFoldedClassname = true;
     }
 
-    if (robot) {
+    if (address != name) {
       return cards.map((card, index) => {
         if (phase !== "showdown") {
           return (

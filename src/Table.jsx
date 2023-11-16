@@ -142,8 +142,12 @@ class Table extends Component {
     imageLoaderRequest.send();
 
     let gamePlayers = null;
+    let gameDeck = null;
+    let gameDealerIndex = 0;
     if (gameState != null) {
       gamePlayers = gameState.players;
+      gameDeck = gameState.deck;
+      gameDealerIndex = gameState.activePlayerIndex;
     }
 
     this.setState((prevState) => ({
@@ -152,13 +156,13 @@ class Table extends Component {
       numPlayersActive: players.length,
       numPlayersFolded: 0,
       numPlayersAllIn: 0,
-      activePlayerIndex: dealerIndex,
-      dealerIndex,
+      activePlayerIndex: gameDealerIndex,
+      dealerIndex: gameDealerIndex,
       blindIndex: {
         big: blindIndicies.bigBlindIndex,
         small: blindIndicies.smallBlindIndex,
       },
-      deck: shuffle(generateDeckOfCards()),
+      deck: gameDeck,
       pot: 0,
       highBet: prevState.minBet,
       betInputValue: prevState.minBet,
