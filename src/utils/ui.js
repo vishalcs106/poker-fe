@@ -128,8 +128,10 @@ const renderActionMenu = (
   players,
   activePlayerIndex,
   phase,
-  changeSliderInputFn
+  changeSliderInputFn,
+  address
 ) => {
+  console.log("renderActionMenu cvalled " + JSON.stringify(players));
   try {
     console.log(
       "renderActionMenu " +
@@ -154,13 +156,17 @@ const renderActionMenu = (
       "renderActionMenu3 " +
         JSON.stringify(players[activePlayerIndex]) +
         " " +
-        activePlayerIndex
+        activePlayerIndex +
+        " " +
+        address +
+        " " +
+        phase
     );
     return phase === "betting1" ||
       phase === "betting2" ||
       phase === "betting3" ||
       phase === "betting4" ? (
-      players[activePlayerIndex].robot ? (
+      players[activePlayerIndex].name != address ? (
         <h4> {`Current Move: ${players[activePlayerIndex].name}`}</h4>
       ) : (
         <React.Fragment>

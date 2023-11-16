@@ -427,7 +427,8 @@ class Table extends Component {
     );
     const max =
       players[activePlayerIndex].chips + players[activePlayerIndex].bet;
-    return players[activePlayerIndex].robot || phase === "showdown" ? null : (
+    return players[activePlayerIndex].name != this.props.accountData ||
+      phase === "showdown" ? null : (
       <React.Fragment>
         <button
           className="action-button"
@@ -510,10 +511,11 @@ class Table extends Component {
               gameState &&
               renderActionMenu(
                 highBet,
-                players,
+                gameState.gamePlayers,
                 activePlayerIndex,
                 phase,
-                this.handleBetInputChange
+                this.handleBetInputChange,
+                this.props.accountData
               )}
           </div>
         </div>
