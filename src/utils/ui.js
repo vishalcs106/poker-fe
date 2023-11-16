@@ -123,6 +123,16 @@ const renderShowdownMessages = (showDownMessages) => {
   });
 };
 
+const formatAddress = (address) => {
+  if (address == null) return "";
+  if (address.length < 42) {
+    return address; // Return the original address if it's too short
+  }
+  return (
+    address.substring(0, 5) + "..." + address.substring(address.length - 3)
+  );
+};
+
 const renderActionMenu = (
   highBet,
   players,
@@ -131,43 +141,26 @@ const renderActionMenu = (
   changeSliderInputFn,
   address
 ) => {
-  console.log("renderActionMenu cvalled " + JSON.stringify(players));
   try {
-    console.log(
-      "renderActionMenu " +
-        JSON.stringify(players[activePlayerIndex]) +
-        " " +
-        activePlayerIndex
-    );
     const min = determineMinBet(
       highBet,
       players[activePlayerIndex].chips,
       players[activePlayerIndex].bet
     );
-    console.log(
-      "renderActionMenu2 " +
-        JSON.stringify(players[activePlayerIndex]) +
-        " " +
-        activePlayerIndex
-    );
     const max =
       players[activePlayerIndex].chips + players[activePlayerIndex].bet;
-    console.log(
-      "renderActionMenu3 " +
-        JSON.stringify(players[activePlayerIndex]) +
-        " " +
-        activePlayerIndex +
-        " " +
-        address +
-        " " +
-        phase
-    );
-    return phase === "betting1" ||
+
+    console.log(players[activePlayerIndex].name + "-" + address);
+    return phase == "initialDeal" ||
+      phase === "betting1" ||
       phase === "betting2" ||
       phase === "betting3" ||
       phase === "betting4" ? (
       players[activePlayerIndex].name != address ? (
-        <h4> {`Current Move: ${players[activePlayerIndex].name}`}</h4>
+        <h4>
+          {" "}
+          {`Current Move: ${formatAddress(players[activePlayerIndex].name)}`}
+        </h4>
       ) : (
         <React.Fragment>
           <Slider
